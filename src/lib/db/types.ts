@@ -15,3 +15,9 @@ export interface MessageData {
   conversationId: string;
   role: string;
 }
+
+export interface Conversation {
+  id: string;
+  name: string;
+  createdAt: string;
+}

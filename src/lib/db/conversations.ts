@@ -1,5 +1,5 @@
 import { db } from "./init";
-import { InsertConversationData, Message } from "./types";
+import { Conversation, InsertConversationData, Message } from "./types";
 
 export function insertConversation(conversationData: InsertConversationData) {
   const stmt = db.prepare("INSERT INTO conversations (id, name) VALUES (?, ?)");
@@ -16,4 +16,11 @@ export function getConversationMessages(conversationId: string) {
     ORDER BY m.createdAt ASC`
   );
   return stmt.all(conversationId) as Message[];
+}
+
+export function getAllConversations() {
+  const stmt = db.prepare(
+    "SELECT * FROM conversations ORDER BY createdAt DESC"
+  );
+  return stmt.all() as Conversation[];
 }
