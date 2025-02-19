@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { createConversation } from "@/lib/actions/createConversation";
 import { Loader, Send } from "lucide-react";
+import { ChatRequestOptions } from "ai";
 import { useRef, useTransition } from "react";
 
 interface ChatSubmitProps {
@@ -13,12 +14,21 @@ interface ChatSubmitProps {
   ) => void;
   input: string;
   selectedModel?: string;
+  isStreaming?: boolean;
+  isNewChat?: boolean;
+  handleSubmit?: (
+    e: React.FormEvent<HTMLFormElement>,
+    chatRequestOptions?: ChatRequestOptions
+  ) => void;
 }
 
 export default function ChatSubmit({
   input,
   handleInputChange,
+  isStreaming = false,
+  isNewChat = false,
   selectedModel,
+  handleSubmit,
 }: ChatSubmitProps) {
   const [pending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
@@ -37,16 +47,20 @@ export default function ChatSubmit({
       return;
     }
 
-    startTransition(() => {
-      createConversation(input, selectedModel);
-    });
+    if (isNewChat && selectedModel) {
+      startTransition(() => {
+        createConversation(input, selectedModel);
+      });
+    } else if (handleSubmit) {
+      handleSubmit(e);
+    }
   }
 
   return (
     <form ref={formRef} onSubmit={onSubmit} className="mt-auto relative">
       <div className="relative">
         <Textarea
-          className="w-full text-lg "
+          className="w-full text-lg bg-background"
           placeholder="Say something"
           onKeyDown={handleKeyDown}
           disabled={pending}
@@ -63,7 +77,7 @@ export default function ChatSubmit({
       <Button
         type="submit"
         size="icon"
-        disabled={pending || !input || !selectedModel}
+        disabled={pending || !input || !selectedModel || isStreaming}
         className="absolute top-1/2 transform -translate-y-1/2 right-4 rounded-full disabled:opacity-50"
       >
         <Send size={24} />

@@ -23,6 +23,7 @@ export default function NewChat() {
         />
         <ChatSubmit
           input={input}
+          isNewChat
           handleInputChange={handleInputChange}
           selectedModel={selectedModel}
         />

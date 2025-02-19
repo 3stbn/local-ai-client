@@ -6,7 +6,9 @@ import { randomUUID } from "crypto";
 import { redirect } from "next/navigation";
 import { ollama } from "../ollama/client";
 
-async function generateConversationName(userMessage: string, model: string) {
+async function generateConversationName(userMessage: string) {
+  // we need a fast model for this
+  const model = "llama3.2";
   const nameResult = await generateText({
     model: ollama(model),
     prompt: `You are an assistant that interacts with a ai chat applications, your job is to assign a short title/name to conversations, based on the user question
@@ -19,7 +21,7 @@ async function generateConversationName(userMessage: string, model: string) {
 
 export async function createConversation(message: string, model: string) {
   const conversationId = randomUUID();
-  const conversationName = await generateConversationName(message, model);
+  const conversationName = await generateConversationName(message);
 
   insertConversation({
     id: conversationId,
