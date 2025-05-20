@@ -12,7 +12,8 @@ export function useModelSelection(initialModel?: string) {
 
   // Initialize model from URL, then initial model param, then default
   const [selectedModel, setSelectedModel] = useState(() => {
-    return searchParams.get("model") || initialModel || "llama3.2";
+    const modelFromUrl = searchParams?.get("model");
+    return modelFromUrl || initialModel || "llama3.2";
   });
 
   // Ensure selectedModel exists in our models list
@@ -40,7 +41,7 @@ export function useModelSelection(initialModel?: string) {
 
   // Sync URL with selected model
   useEffect(() => {
-    if (pathname && router) {
+    if (pathname && router && searchParams) {
       const current = new URLSearchParams(searchParams.toString());
       if (current.get("model") !== selectedModel) {
         current.set("model", selectedModel);

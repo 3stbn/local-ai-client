@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Chat from "@/components/chat/Chat";
 import {
   getConversation,
@@ -24,10 +25,18 @@ export default async function ConversationPage({
   }));
 
   return (
-    <Chat
-      initialMessages={messagesMapped}
-      conversationId={conversationId}
-      initialModel={conversation?.model}
-    />
+    <Suspense
+      fallback={
+        <div className="h-screen flex items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
+      <Chat
+        initialMessages={messagesMapped}
+        conversationId={conversationId}
+        initialModel={conversation?.model}
+      />
+    </Suspense>
   );
 }
