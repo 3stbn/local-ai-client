@@ -5,28 +5,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dispatch, SetStateAction } from "react";
-
-const models = [
-  { value: "phi4", label: "Phi-4" },
-  { value: "deepseek-r1:8b", label: "DeepSeek 8B" },
-  { value: "llama3.2", label: "Llama 3.2" },
-  { value: "deepseek-r1:1.5b", label: "DeepSeek 1.5B" },
-  { value: "gemma2", label: "Gemma 2" },
-];
+import { Loader2 } from "lucide-react";
+import { FormattedModel } from "@/hooks/useOllamaModels";
 
 export default function ModelSelector({
   selectedModel,
   setSelectedModel,
+  models,
+  isLoading,
 }: {
   selectedModel: string;
-  setSelectedModel: Dispatch<SetStateAction<string>>;
+  setSelectedModel: (value: string) => void;
+  models: FormattedModel[];
+  isLoading: boolean;
 }) {
   return (
     <div className="mb-4">
-      <Select value={selectedModel} onValueChange={setSelectedModel}>
+      <Select
+        value={selectedModel}
+        onValueChange={setSelectedModel}
+        disabled={isLoading}
+      >
         <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Select model" />
+          {isLoading ? (
+            <div className="flex items-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <span>Loading...</span>
+            </div>
+          ) : (
+            <SelectValue placeholder="Select model" />
+          )}
         </SelectTrigger>
         <SelectContent>
           {models.map((model) => (

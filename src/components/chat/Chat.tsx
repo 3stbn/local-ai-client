@@ -2,29 +2,35 @@
 import { useAutoScroll } from "@/hooks/useAutoScroll";
 import { Message as MessageType } from "ai";
 import { useChat } from "ai/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ChatSubmit from "./ChatSubmit";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Message from "./Message";
 import ModelSelector from "./ModelSelector";
+import { useModelSelection } from "@/hooks/useModelSelection";
 
 interface ChatProps {
   initialMessages?: MessageType[];
   conversationId: string;
+  initialModel?: string;
 }
 
 export default function Chat({
   initialMessages = [],
   conversationId,
+  initialModel,
 }: ChatProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
 
-  const [selectedModel, setSelectedModel] = useState(() => {
-    return searchParams.get("model") || "llama3.2";
-  });
+  const {
+    selectedModel,
+    setSelectedModel,
+    models,
+    isLoading: modelsLoading,
+  } = useModelSelection(initialModel);
 
   const {
     messages,
@@ -62,12 +68,16 @@ export default function Chat({
     }
   }, [searchParams, append, router, pathname]);
 
+  // URL sync is now handled by the useModelSelection hook
+
   return (
     <main className="bg-muted w-full h-screen">
       <div className="container h-full w-full flex flex-col p-8">
         <ModelSelector
           selectedModel={selectedModel}
           setSelectedModel={setSelectedModel}
+          models={models}
+          isLoading={modelsLoading}
         />
         <div className="flex-1 overflow-y-auto" onScroll={handleScroll}>
           {messages.map((message) => (

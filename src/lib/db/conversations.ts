@@ -2,8 +2,24 @@ import { db } from "./init";
 import { Conversation, InsertConversationData, Message } from "./types";
 
 export function insertConversation(conversationData: InsertConversationData) {
-  const stmt = db.prepare("INSERT INTO conversations (id, name) VALUES (?, ?)");
-  return stmt.run(conversationData.id, conversationData.name ?? "");
+  const stmt = db.prepare(
+    "INSERT INTO conversations (id, name, model) VALUES (?, ?, ?)"
+  );
+  return stmt.run(
+    conversationData.id,
+    conversationData.name ?? "",
+    conversationData.model ?? null
+  );
+}
+
+export function updateConversationModel(conversationId: string, model: string) {
+  const stmt = db.prepare("UPDATE conversations SET model = ? WHERE id = ?");
+  return stmt.run(model, conversationId);
+}
+
+export function getConversation(conversationId: string) {
+  const stmt = db.prepare("SELECT * FROM conversations WHERE id = ?");
+  return stmt.get(conversationId) as Conversation | undefined;
 }
 
 export function getConversationMessages(conversationId: string) {

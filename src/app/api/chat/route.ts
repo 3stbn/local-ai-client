@@ -1,13 +1,23 @@
 import { insertConversationMessages } from "@/lib/db/messages";
+import { updateConversationModel } from "@/lib/db/conversations";
 import { ollama } from "@/lib/ollama/client";
 import { streamText } from "ai";
 import { randomUUID } from "crypto";
 import { MessageData } from "@/lib/db/types";
+
 export async function POST(req: Request) {
   const { messages, model, conversationId } = await req.json();
 
   if (!conversationId) {
     return new Response("Conversation ID is required", { status: 400 });
+  }
+
+  // Ensure the conversation has the most recent model saved
+  try {
+    updateConversationModel(conversationId, model);
+  } catch (error) {
+    console.error("Failed to update conversation model:", error);
+    // Continue processing the message even if model update fails
   }
 
   const lastUserMsg = messages[(messages?.length ?? 1) - 1];

@@ -26,6 +26,7 @@ export async function createConversation(message: string, model: string) {
   insertConversation({
     id: conversationId,
     name: conversationName,
+    model: model,
   });
 
   redirect(`/conversations/${conversationId}?q=${message}&model=${model}`);

@@ -1,5 +1,8 @@
 import Chat from "@/components/chat/Chat";
-import { getConversationMessages } from "@/lib/db/conversations";
+import {
+  getConversation,
+  getConversationMessages,
+} from "@/lib/db/conversations";
 import { Message } from "ai";
 
 interface ConversationPageProps {
@@ -11,6 +14,7 @@ export default async function ConversationPage({
 }: ConversationPageProps) {
   const { conversationId } = await params;
   const messages = getConversationMessages(conversationId);
+  const conversation = getConversation(conversationId);
 
   const messagesMapped: Message[] = messages.map((m) => ({
     id: m.id,
@@ -20,6 +24,10 @@ export default async function ConversationPage({
   }));
 
   return (
-    <Chat initialMessages={messagesMapped} conversationId={conversationId} />
+    <Chat
+      initialMessages={messagesMapped}
+      conversationId={conversationId}
+      initialModel={conversation?.model}
+    />
   );
 }
