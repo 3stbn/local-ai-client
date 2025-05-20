@@ -1,7 +1,7 @@
 "use client";
 import { useAutoScroll } from "@/hooks/useAutoScroll";
 import { Message as MessageType } from "ai";
-import { useChat } from "ai/react";
+import { useChat } from "@ai-sdk/react";
 import { useEffect } from "react";
 import ChatSubmit from "./ChatSubmit";
 
@@ -32,20 +32,16 @@ export default function Chat({
     isLoading: modelsLoading,
   } = useModelSelection(initialModel);
 
-  const {
-    messages,
-    handleSubmit,
-    input,
-    handleInputChange,
-    append,
-    isLoading,
-  } = useChat({
-    body: {
-      model: selectedModel,
-      conversationId: conversationId,
-    },
-    initialMessages: initialMessages,
-  });
+  const { messages, handleSubmit, input, handleInputChange, append, status } =
+    useChat({
+      body: {
+        model: selectedModel,
+        conversationId: conversationId,
+      },
+      initialMessages: initialMessages,
+    });
+
+  const isLoading = status === "streaming";
 
   const { messagesEndRef, handleScroll } = useAutoScroll({
     dependencies: messages,
@@ -63,7 +59,7 @@ export default function Chat({
       const newParams = new URLSearchParams(searchParams.toString());
       newParams.delete("q");
       router.replace(
-        `${pathname}${newParams.toString() ? `?${newParams.toString()}` : ""}`
+        `${pathname}${newParams.toString() ? `?${newParams.toString()}` : ""}`,
       );
     }
   }, [searchParams, append, router, pathname]);
