@@ -17,6 +17,11 @@ export function updateConversationModel(conversationId: string, model: string) {
   return stmt.run(model, conversationId);
 }
 
+export function deleteConversation(conversationId: string) {
+  const stmt = db.prepare("DELETE FROM conversations WHERE id = ?");
+  return stmt.run(conversationId);
+}
+
 export function getConversation(conversationId: string) {
   const stmt = db.prepare("SELECT * FROM conversations WHERE id = ?");
   return stmt.get(conversationId) as Conversation | undefined;
