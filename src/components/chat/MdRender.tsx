@@ -4,9 +4,9 @@ import remarkGfm from "remark-gfm";
 
 const MarkdownRenderer = ({ content }: { content: string }) => {
   return (
-    <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose max-w-full">
-      {content}
-    </ReactMarkdown>
+    <div className="prose max-w-full">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+    </div>
   );
 };
 
