@@ -29,5 +29,10 @@ export async function createConversation(message: string, model: string) {
     model: model,
   });
 
-  redirect(`/conversations/${conversationId}?q=${message}&model=${model}`);
+  // Base64 encode the message parameter
+  const encodedMessage = Buffer.from(message).toString("base64");
+
+  redirect(
+    `/conversations/${conversationId}?q=${encodedMessage}&model=${model}`
+  );
 }

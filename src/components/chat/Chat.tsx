@@ -50,16 +50,28 @@ export default function Chat({
   useEffect(() => {
     const q = searchParams.get("q");
     if (q) {
-      append({
-        content: q,
-        role: "user",
-      });
+      try {
+        // Decode the base64 encoded message
+        const decodedMessage = Buffer.from(q, "base64").toString();
+
+        append({
+          content: decodedMessage,
+          role: "user",
+        });
+      } catch (error) {
+        console.error("Error decoding message:", error);
+        // Fallback to using the raw parameter if decoding fails
+        append({
+          content: q,
+          role: "user",
+        });
+      }
 
       // Remove the q parameter from URL
       const newParams = new URLSearchParams(searchParams.toString());
       newParams.delete("q");
       router.replace(
-        `${pathname}${newParams.toString() ? `?${newParams.toString()}` : ""}`,
+        `${pathname}${newParams.toString() ? `?${newParams.toString()}` : ""}`
       );
     }
   }, [searchParams, append, router, pathname]);
