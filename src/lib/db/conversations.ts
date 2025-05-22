@@ -39,6 +39,11 @@ export function getConversationMessages(conversationId: string) {
   return stmt.all(conversationId) as Message[];
 }
 
+export function updateConversationName(conversationId: string, name: string) {
+  const stmt = db.prepare("UPDATE conversations SET name = ? WHERE id = ?");
+  return stmt.run(name, conversationId);
+}
+
 export function getAllConversations() {
   const stmt = db.prepare(
     "SELECT * FROM conversations ORDER BY createdAt DESC"
